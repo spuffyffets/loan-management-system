@@ -1,0 +1,110 @@
+<div
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg rounded-4">
+          <div
+            class="card-header text-white text-center rounded-top-4"
+            style="background: linear-gradient(90deg, #0062E6, #33AEFF);"
+          >
+            <h4 class="mb-1">
+              <i class="fas fa-user-plus me-2"></i> Create Account
+            </h4>
+            <small class="d-block">Please fill in your details</small>
+          </div>
+
+          <div class="card-body p-4">
+           <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()" novalidate>
+
+              <div class="mb-3">
+                <label for="fullName" class="form-label">Full Name</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <input
+                    type="text"
+                    formControlName="fullName"
+                    class="form-control"
+                    id="fullName"
+                    placeholder="Enter full name"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <input
+                    type="email"
+                    formControlName="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="Enter email"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  <input
+                    type="text"
+                    formControlName="phoneNumber"
+                    class="form-control"
+                    id="phoneNumber"
+                    placeholder="Enter phone number"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                  <input
+                    type="password"
+                    formControlName="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Enter password"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label for="role" class="form-label">Role</label>
+                <select
+                  formControlName="role"
+                  class="form-select"
+                  id="role"
+                >
+                  <option value="">Select Role</option>
+                  <option value="CUSTOMER">CUSTOMER</option>
+                  <option value="LOAN_OFFICER">LOAN_OFFICER</option>
+                  <option value="CREDIT_MANAGER">CREDIT_MANAGER</option>
+                  <option value="DISBURSEMENT_MANAGER">DISBURSEMENT_MANAGER</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 fw-bold">
+    <i class="fas fa-user-plus me-1"></i> Register
+  </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="text-center mt-3">
+          <a
+            routerLink="/login"
+            class="text-white fw-bold text-decoration-none"
+            >Already have an account? Login</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

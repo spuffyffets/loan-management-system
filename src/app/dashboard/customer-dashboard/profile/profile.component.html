@@ -1,0 +1,111 @@
+<!-- <pre>{{ customer | json }}</pre> -->
+
+
+<div class="container mt-5">
+  <div class="card shadow-lg border-0 rounded-4" *ngIf="customer">
+    <div class="card-header bg-primary text-white d-flex align-items-center p-4">
+      <i class="fas fa-user-circle fa-2x me-3"></i>
+      <h5 class="mb-0 fw-bold">Your Profile</h5>
+    </div>
+    <div class="card-body p-4">
+      <div class="row mb-4 g-4">
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Name:</strong> {{ customer.fullName }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Email:</strong> {{ customer.email }}
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4 g-4">
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Phone:</strong> {{ customer.phoneNumber }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Address:</strong> {{ customer.address }}
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4 g-4">
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Employment:</strong> {{ customer.employmentType }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Monthly Income:</strong> ₹{{ customer.monthlyIncome }}
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4 g-4">
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">PAN:</strong> {{ customer.panNumber }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">Aadhaar:</strong> {{ customer.aadhaarNumber }}
+          </div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3 border border-light-subtle shadow-sm transition-all">
+            <strong class="text-muted fw-bolder">KYC Status:</strong>
+            <span class="badge bg-{{ customer.kycStatus === 'Verified' ? 'success' : 'warning text-dark' }} rounded-pill px-3 py-2">
+              {{ customer.kycStatus || 'Pending' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+  }
+  .card-body {
+    background-color: #f8f9fa;
+  }
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+  .transition-all:hover {
+    background-color: #e9ecef;
+    transform: scale(1.02);
+  }
+  .badge {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .rounded-4 {
+    border-radius: 1rem !important;
+  }
+  .text-muted {
+    color: #6c757d !important;
+    font-weight: 700;
+  }
+  .fw-bolder {
+    font-weight: 800 !important;
+  }
+  .card-header {
+    border-bottom: none;
+  }
+  .border-light-subtle {
+    border-color: #dee2e6 !important;
+  }
+</style>

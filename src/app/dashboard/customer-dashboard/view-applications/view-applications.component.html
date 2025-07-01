@@ -1,0 +1,51 @@
+<div class="container mt-4">
+  <h3 class="text-center mb-4">My Loan Applications</h3>
+
+  <div *ngIf="applications.length > 0; else noData">
+    <table class="table table-bordered table-hover shadow">
+      <thead class="table-primary">
+  <tr>
+    <th>Application ID</th>
+    <th>Loan Purpose</th>
+    <th>Amount</th>
+    <th>Tenure</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+</thead>
+
+      <tbody>
+  <tr *ngFor="let app of applications">
+    <td>{{ app.id }}</td>
+    <td>{{ app.loanPurpose }}</td>
+    <td>₹{{ app.loanAmount }}</td>
+    <td>{{ app.loanTenureInMonths }} months</td>
+    <td>
+      <span class="badge"
+        [ngClass]="{
+          'bg-warning': app.applicationStatus === 'PENDING',
+          'bg-success': app.applicationStatus === 'APPROVED',
+          'bg-danger': app.applicationStatus === 'REJECTED'
+        }">
+        {{ app.applicationStatus }}
+      </span>
+    </td>
+    <td>
+      <button
+        class="btn btn-sm btn-danger"
+        (click)="deleteApplication(app.id)">
+        Delete
+      </button>
+    </td>
+  </tr>
+</tbody>
+
+    </table>
+  </div>
+
+  <ng-template #noData>
+    <div class="alert alert-info text-center">
+      You have not applied for any loans yet.
+    </div>
+  </ng-template>
+</div>
