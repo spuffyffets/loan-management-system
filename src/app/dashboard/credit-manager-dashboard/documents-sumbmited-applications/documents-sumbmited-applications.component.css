@@ -1,0 +1,53 @@
+/* Card styling */
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Table styling */
+.table {
+  font-size: 0.875rem;
+}
+
+.table th {
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.03);
+}
+
+/* Badge styling */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+}
+
+/* Pagination styling */
+.my-pagination ::ng-deep .ngx-pagination {
+  margin-bottom: 0;
+}
+
+.my-pagination ::ng-deep .ngx-pagination .current {
+  background: #0d6efd;
+  border-radius: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .card-header div.w-25 {
+    width: 100% !important;
+    margin-top: 0.5rem;
+  }
+}

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from 'src/app/shared/services/customer.service';
+import { RouterOutlet } from "@angular/router";
 
 @Component({
   selector: 'app-customer-dashboard',
   templateUrl: './customer-dashboard.component.html',
-  styleUrls: ['./customer-dashboard.component.css']
+  styleUrls: ['./customer-dashboard.component.css'],
+
 })
 export class CustomerDashboardComponent implements OnInit {
   userName: string = 'Customer';
@@ -33,6 +35,6 @@ export class CustomerDashboardComponent implements OnInit {
 
   logout(): void {
     localStorage.clear();
-    window.location.href = '/login';
+    window.location.href = '/auth';
   }
 }

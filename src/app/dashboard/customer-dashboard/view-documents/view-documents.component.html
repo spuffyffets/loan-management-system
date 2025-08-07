@@ -1,1 +1,57 @@
-<p>view-documents works!</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow rounded-4">
+        <div class="card-header bg-primary text-white text-center rounded-top-4">
+          <h4><i class="fas fa-folder-open me-2"></i> Your Uploaded Documents</h4>
+        </div>
+
+        <div class="card-body">
+          <div *ngIf="documents.length > 0; else noDocs">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                  <tr>
+                    <th>Document Type</th>
+                    <th>File Name</th>
+                    <th>Uploaded On</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let doc of documents">
+                    <td>{{ doc.documentType }}</td>
+                    <td>{{ doc.fileName }}</td>
+                    <td>{{ doc.uploadDate | date: 'dd MMM yyyy, h:mm a' }}</td>
+                    <td>
+                      <span class="badge"
+                        [ngClass]="{
+                          'bg-warning': doc.verificationStatus === 'PENDING',
+                          'bg-success': doc.verificationStatus === 'VERIFIED',
+                          'bg-danger': doc.verificationStatus === 'REJECTED'
+                        }">
+                        {{ doc.verificationStatus }}
+                      </span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-primary" (click)="viewDocument(doc.fileName)">
+                        <i class="fas fa-eye me-1"></i> View
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <ng-template #noDocs>
+            <div class="alert alert-warning text-center mt-3">
+              <i class="fas fa-info-circle me-2"></i>No documents uploaded yet.
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

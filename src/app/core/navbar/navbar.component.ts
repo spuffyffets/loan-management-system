@@ -11,6 +11,6 @@ export class NavbarComponent {
   constructor(private router: Router) {}
 
   checkLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth']);
   }
 }

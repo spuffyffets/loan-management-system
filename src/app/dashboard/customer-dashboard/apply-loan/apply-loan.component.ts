@@ -29,6 +29,7 @@ export class ApplyLoanComponent implements OnInit {
       employerName: ['', Validators.required],
       monthlyIncome: ['', Validators.required],
       bankAccountNumber: ['', Validators.required],
+      ifscCode: ['', Validators.required],
       accountHolderName: ['', Validators.required]
     });
   }

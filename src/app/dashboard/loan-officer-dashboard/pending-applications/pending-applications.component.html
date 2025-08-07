@@ -1,0 +1,41 @@
+<div class="flex-grow-1 p-4">
+    <h3 class="text-center mb-4">Pending Loan Applications</h3>
+
+    <div *ngIf="applications.length > 0; else noData">
+      <table class="table table-bordered table-hover shadow">
+        <thead class="table-primary">
+          <tr>
+            <th>Application ID</th>
+            <!-- <th>Email</th> -->
+            <th>Loan Amount</th>
+            <th>Purpose</th>
+            <th>Tenure</th>
+            <th>CIBIL</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of applications">
+            <td>{{ app.id }}</td>
+            <!-- <td>{{ app.customer?.user?.email }}</td> -->
+            <td>₹{{ app.loanAmount }}</td>
+            <td>{{ app.loanPurpose }}</td>
+            <td>{{ app.loanTenureInMonths }} months</td>
+            <td>
+              <span class="badge bg-info">{{ app.cibilScore }}</span>
+            </td>
+            <td>
+              <button class="btn btn-success btn-sm me-2" (click)="verifyCIBIL(app.id)">Verify</button>
+              <button class="btn btn-danger btn-sm" (click)="rejectApplication(app.id)">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noData>
+      <div class="alert alert-info text-center">
+        No pending applications.
+      </div>
+    </ng-template>
+  </div>

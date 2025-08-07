@@ -1,0 +1,96 @@
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0">Applications with Documents Submitted</h4>
+        <small class="text-white-50">{{filteredApplications.length}} applications found</small>
+      </div>
+      <div class="w-25">
+        <input type="text" class="form-control form-control-sm" 
+               placeholder="Search applications..." 
+               [(ngModel)]="searchTerm">
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading applications...</p>
+      </div>
+
+      <div *ngIf="!isLoading && filteredApplications.length === 0" class="text-center py-4 text-muted">
+        <i class="bi bi-file-earmark-excel display-4"></i>
+        <p class="mt-2">No applications found matching your criteria</p>
+      </div>
+
+      <div *ngIf="!isLoading && filteredApplications.length > 0" class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>App ID</th>
+              <th>Applicant</th>
+              <th>Contact</th>
+              <th>Loan Details</th>
+              <th>Financial Info</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of filteredApplications | paginate: { 
+                  itemsPerPage: itemsPerPage, 
+                  currentPage: currentPage,
+                  totalItems: filteredApplications.length
+                }">
+              <td>{{ app.applicationId }}</td>
+              <td>
+                <strong>{{ app.fullName }}</strong><br>
+                <small class="text-muted">PAN: {{ app.panNumber }}</small>
+              </td>
+              <td>
+                {{ app.email }}<br>
+                {{ app.phoneNumber || 'N/A' }}
+              </td>
+              <td>
+                <strong>₹{{ app.loanAmount | number }}</strong><br>
+                <small>{{ app.loanTenureInMonths }} months</small>
+              </td>
+              <td>
+                ₹{{ app.monthlyIncome | number }}<br>
+                <small>{{ app.employmentType }}</small>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-success': app.applicationStatus === 'APPROVED',
+                  'bg-warning': app.applicationStatus === 'PENDING',
+                  'bg-secondary': !app.applicationStatus
+                }">
+                  {{ app.applicationStatus || 'SUBMITTED' }}
+                </span>
+              </td>
+              <td>{{ app.applicationDate | date: 'shortDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="filteredApplications.length > 0" class="card-footer d-flex justify-content-between align-items-center">
+      <div class="form-group mb-0">
+        <select class="form-select form-select-sm" [(ngModel)]="itemsPerPage">
+          <option value="5">5 per page</option>
+          <option value="10">10 per page</option>
+          <option value="25">25 per page</option>
+        </select>
+      </div>
+      <pagination-controls 
+        (pageChange)="currentPage = $event"
+        previousLabel="Previous"
+        nextLabel="Next"
+        class="my-pagination">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

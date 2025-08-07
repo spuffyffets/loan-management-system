@@ -1,0 +1,188 @@
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="bi bi-file-earmark-check me-2"></i>
+        Document Verification Panel
+      </h4>
+    </div>
+
+    <div class="card-body">
+      <!-- Loading Indicator -->
+      <div *ngIf="isLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading data...</p>
+      </div>
+
+      <!-- Applications List -->
+      <div *ngIf="!isLoading">
+        <h5 class="mb-3">
+          <i class="bi bi-list-ul me-2"></i>
+          Select a Loan Application
+        </h5>
+        
+        <div *ngIf="loanApplications.length === 0" class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          No loan applications available for verification
+        </div>
+
+        <div class="list-group">
+          <button *ngFor="let loan of loanApplications" 
+                  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                  [class.active]="selectedLoan?.applicationId === loan.applicationId || selectedLoan?.id === loan.id"
+                  (click)="selectLoan(loan)">
+            <div>
+              <strong>Application #{{loan.applicationId || loan.id}}</strong>
+              <div class="text-muted small">{{loan.fullName}}</div>
+            </div>
+            <span class="badge bg-secondary">
+              {{loan.applicationStatus || 'Pending'}}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Documents Panel -->
+      <div *ngIf="selectedLoan && !isLoading" class="mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5>
+            <i class="bi bi-files me-2"></i>
+            Documents for Application #{{selectedLoan.applicationId || selectedLoan.id}}
+          </h5>
+          <div>
+            <span class="badge me-2" [ngClass]="{
+              'bg-success': allDocumentsVerified,
+              'bg-warning': !allDocumentsVerified
+            }">
+              {{ allDocumentsVerified ? 'All Verified' : 'Pending Verification' }}
+            </span>
+            <button class="btn btn-sm btn-outline-primary"
+                    (click)="loadDocuments(selectedLoan.applicationId || selectedLoan.id)">
+              <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="documents.length === 0" class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          No documents found for this application
+        </div>
+
+        <div *ngIf="documents.length > 0" class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th width="50px">ID</th>
+                <th>Document</th>
+                <th>Type</th>
+                <th width="120px">Status</th>
+                <th width="120px">View</th>
+                <th width="200px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let doc of documents">
+                <td>{{ doc.id }}</td>
+                <td>{{ doc.name || 'Untitled' }}</td>
+                <td>{{ doc.type || 'N/A' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'bg-success': doc.verificationStatus === 'VERIFIED',
+                    'bg-danger': doc.verificationStatus === 'REJECTED',
+                    'bg-warning': !doc.verificationStatus || doc.verificationStatus === 'PENDING'
+                  }">
+                    {{ doc.verificationStatus || 'PENDING' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary w-100" 
+                          (click)="openDocumentModal(doc)"
+                          [disabled]="!doc.data"
+                          title="View Document">
+                    <i class="bi bi-eye"></i> View
+                  </button>
+                </td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-success flex-grow-1"
+                            (click)="verifyDocument(doc.id, 'VERIFIED')"
+                            [disabled]="doc.verificationStatus === 'VERIFIED'"
+                            title="Verify Document">
+                      <i class="bi bi-check-circle"></i> Verify
+                    </button>
+                    <button class="btn btn-sm btn-danger flex-grow-1"
+                            (click)="verifyDocument(doc.id, 'REJECTED')"
+                            [disabled]="doc.verificationStatus === 'REJECTED'"
+                            title="Reject Document">
+                      <i class="bi bi-x-circle"></i> Reject
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Document Preview Modal -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-file-earmark-text me-2"></i>
+          Document Preview
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectedDocument; else noDocument">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <p><strong>Document ID:</strong> {{ selectedDocument.id }}</p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>Name:</strong> {{ selectedDocument.name || 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>Type:</strong> {{ selectedDocument.type || 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div *ngIf="selectedDocument.data; else noDocumentData" class="border rounded p-2 bg-light">
+            <iframe
+              [src]="('data:' + selectedDocument.fileType + ';base64,' + selectedDocument.data) | safeUrl"
+              width="100%"
+              height="500px"
+              style="border: none;">
+            </iframe>
+          </div>
+          
+          <ng-template #noDocumentData>
+            <div class="alert alert-warning text-center">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              Document content not available
+            </div>
+          </ng-template>
+        </div>
+        <ng-template #noDocument>
+          <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            No document selected for preview
+          </div>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          <i class="bi bi-x-lg me-1"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showModal" class="modal-backdrop fade show"></div>

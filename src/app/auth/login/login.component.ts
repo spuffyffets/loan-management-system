@@ -56,9 +56,6 @@ export class LoginComponent {
   }
 }
 
-
-  
-
   backToHome() {
     this.router.navigate(['/home']);
   }

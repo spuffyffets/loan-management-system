@@ -32,6 +32,13 @@ export class CustomerService {
       responseType: 'text',
     });
   }
+ getUploadedDocuments(email: string): Observable<any[]> {
+  return this.http.get<any[]>(`${BASE_URL}/my-documents`, {
+    params: { email }
+  });
+}
+
+
 
   getApplications(email: string): Observable<any[]> {
     return this.http.get<any[]>(`${BASE_URL}/my-applications`, {

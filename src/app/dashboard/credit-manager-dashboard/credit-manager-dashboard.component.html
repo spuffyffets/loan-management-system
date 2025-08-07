@@ -1,1 +1,57 @@
-<p>credit-manager-dashboard works!</p>
+<div class="d-flex">
+
+  <!-- Sidebar -->
+ <nav class="bg-light shadow p-3" style="width: 250px; height: 100vh;">
+  <div class="text-center mb-4">
+    <i class="fas fa-user-tie fa-3x text-primary"></i>
+    <h5 class="mt-2">{{ creditManagerName }}</h5>
+  </div>
+  <ul class="nav flex-column nav-pills">
+
+
+    <li class="nav-item mb-2">
+      <a routerLink="documents-sumbmited-applications" class="nav-link text-dark">
+        <i class="fas fa-file-signature me-2"></i> loan Applications
+      </a>
+      
+    </li>
+    <li class="nav-item mb-2">
+      <a routerLink="verify-documents" class="nav-link text-dark">
+        <i class="fas fa-file-alt me-2"></i> Get Documents to Verify
+      </a>
+    </li>
+    <li class="nav-item mb-2">
+      <a routerLink="evaluate-loan" class="nav-link text-dark">
+        <i class="fas fa-check-circle me-2"></i> Evaluate Loan
+      </a>
+    </li>
+    <li class="nav-item mb-2">
+      <a routerLink="sanction-letter" class="nav-link text-dark">
+        <i class="fas fa-file-signature me-2"></i> Sanction Letter
+      </a>
+
+    </li>
+  </ul>
+</nav>
+
+
+
+  <!-- Main Content -->
+  <div class="flex-grow-1">
+    <!-- Topbar -->
+    <div class="bg-white shadow-sm p-3 mb-3 d-flex justify-content-between align-items-center">
+      <h4 class="text-primary mb-0">
+        <i class="fas fa-tachometer-alt me-2"></i> Credit manager Dashboard
+      </h4>
+      <button class="btn btn-outline-danger btn-sm me-3" (click)="logout()">
+        <i class="fas fa-sign-out-alt me-1"></i> Logout
+      </button>
+    </div>
+
+    <!-- Page Content -->
+    <div class="p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+</div>

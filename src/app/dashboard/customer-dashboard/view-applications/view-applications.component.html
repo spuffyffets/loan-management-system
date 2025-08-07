@@ -21,27 +21,93 @@
     <td>₹{{ app.loanAmount }}</td>
     <td>{{ app.loanTenureInMonths }} months</td>
     <td>
-      <span class="badge"
-        [ngClass]="{
-          'bg-warning': app.applicationStatus === 'PENDING',
-          'bg-success': app.applicationStatus === 'APPROVED',
-          'bg-danger': app.applicationStatus === 'REJECTED'
-        }">
-        {{ app.applicationStatus }}
-      </span>
+     <span class="badge"
+  [ngClass]="{
+    'bg-warning': app.applicationStatus === 'PENDING' || app.applicationStatus === 'REQUESTED_DOCUMENTS',
+
+
+
+    'bg-primary': app.applicationStatus === 'CIBIL_VERIFIED',
+    'bg-info': app.applicationStatus === 'DOCUMENT_SUBMITTED' || app.applicationStatus === 'EVALUATED',
+    'bg-success': app.applicationStatus === 'SANCTIONED' || app.applicationStatus === 'DISBURSED',
+    'bg-danger': app.applicationStatus === 'REJECTED'
+  }">
+  {{ app.applicationStatus.replace('_', ' ') }}
+</span>
     </td>
+
     <td>
-      <button
-        class="btn btn-sm btn-danger"
-        (click)="deleteApplication(app.id)">
-        Delete
-      </button>
-    </td>
+  <button
+    class="btn btn-sm btn-danger me-2"
+    (click)="deleteApplication(app.id)">
+    Delete
+  </button>
+
+  <button *ngIf="app.applicationStatus === 'REQUESTED_DOCUMENTS'"
+          class="btn btn-sm btn-primary"
+          (click)="openUploadModal(app.id)">
+    Upload Documents
+  </button>
+</td>
+
+
   </tr>
 </tbody>
 
     </table>
   </div>
+
+  <!-- Upload Document Modal -->
+<div *ngIf="showUploadForm" class="card mt-3 p-3 shadow">
+  <h5 class="mb-3">Upload Documents for Application ID: {{ selectedAppId }}</h5>
+<h6 class="text-success mb-0">{{ getUploadedCount() }}</h6>
+
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle text-center">
+      <thead class="table-secondary">
+        <tr>
+          <th>Document Type</th>
+          <th>Status</th>
+          <th>Select File</th>
+          <th>Upload</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let type of documentTypes">
+          <td>{{ type }}</td>
+          <td>
+            <span *ngIf="uploadedDocuments[type]">
+              {{ uploadedDocuments[type] }}
+            </span>
+            <span *ngIf="!uploadedDocuments[type]" class="text-danger">
+              Not Uploaded
+            </span>
+          </td>
+          <td>
+            <input
+              type="file"
+              class="form-control"
+              (change)="onFileSelectedPerType($event, type)"
+            />
+          </td>
+          <td>
+            <button
+              class="btn btn-sm btn-success"
+              (click)="uploadPerType(type)"
+            >
+              Upload
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button class="btn btn-secondary mt-3" (click)="closeUploadForm()">
+    Close
+  </button>
+</div>
+
 
   <ng-template #noData>
     <div class="alert alert-info text-center">

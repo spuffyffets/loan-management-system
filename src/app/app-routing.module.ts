@@ -15,6 +15,13 @@ import { ApplyLoanComponent } from './dashboard/customer-dashboard/apply-loan/ap
 import { UploadDocumentComponent } from './dashboard/customer-dashboard/upload-document/upload-document.component';
 import { ViewDocumentsComponent } from './dashboard/customer-dashboard/view-documents/view-documents.component';
 import { ViewApplicationsComponent } from './dashboard/customer-dashboard/view-applications/view-applications.component';
+import { PendingApplicationsComponent } from './dashboard/loan-officer-dashboard/pending-applications/pending-applications.component';
+import { LoanOfficerProfileComponent } from './dashboard/loan-officer-dashboard/profile/profile.component';
+import { AuthComponent } from './auth/auth/auth.component';
+import { VerifyDocumentsComponent } from './dashboard/credit-manager-dashboard/verify-documents/verify-documents.component';
+import { SanctionLetterComponent } from './dashboard/credit-manager-dashboard/sanction-letter/sanction-letter.component';
+import { EvaluateLoanComponent } from './dashboard/credit-manager-dashboard/evaluate-loan/evaluate-loan.component';
+import { DocumentsSumbmitedApplicationsComponent } from './dashboard/credit-manager-dashboard/documents-sumbmited-applications/documents-sumbmited-applications.component';
 
 
 const routes: Routes = [
@@ -25,6 +32,7 @@ const routes: Routes = [
   { path: 'gallery', component: GalleryComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'auth', component: AuthComponent },
 
   // Dashboards
  {
@@ -40,8 +48,28 @@ const routes: Routes = [
   ]
 },
 
-  { path: 'loan-officer-dashboard', component: LoanOfficerDashboardComponent },
-  { path: 'credit-manager-dashboard', component: CreditManagerDashboardComponent },
+  {
+  path: 'loan-officer-dashboard',
+  component: LoanOfficerDashboardComponent,
+  children: [
+    // { path: 'profile', component: LoanOfficerProfileComponent },
+    { path: 'pending-applications', component: PendingApplicationsComponent },
+    { path: '', redirectTo: 'profile', pathMatch: 'full' }
+  ]
+},
+
+  {
+  path: 'credit-manager-dashboard',
+  component: CreditManagerDashboardComponent,
+  children: [
+    
+    { path: 'verify-documents', component: VerifyDocumentsComponent },
+    {path: 'documents-sumbmited-applications', component: DocumentsSumbmitedApplicationsComponent },
+    { path: 'evaluate-loan', component: EvaluateLoanComponent },
+    { path: 'sanction-letter', component: SanctionLetterComponent },
+    { path: '', redirectTo: 'pending-applications', pathMatch: 'full' }
+  ]
+},
   { path: 'disbursement-dashboard', component: DisbursementDashboardComponent }
 ];
 

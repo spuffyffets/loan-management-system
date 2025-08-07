@@ -21,12 +21,21 @@ import { ApplyLoanComponent } from './dashboard/customer-dashboard/apply-loan/ap
 import { UploadDocumentComponent } from './dashboard/customer-dashboard/upload-document/upload-document.component';
 import { ViewApplicationsComponent } from './dashboard/customer-dashboard/view-applications/view-applications.component';
 import { ViewDocumentsComponent } from './dashboard/customer-dashboard/view-documents/view-documents.component';
+import { PendingApplicationsComponent } from './dashboard/loan-officer-dashboard/pending-applications/pending-applications.component';
+import { AuthComponent } from './auth/auth/auth.component';
+import { VerifyDocumentsComponent } from './dashboard/credit-manager-dashboard/verify-documents/verify-documents.component';
+import { EvaluateLoanComponent } from './dashboard/credit-manager-dashboard/evaluate-loan/evaluate-loan.component';
+import { SanctionLetterComponent } from './dashboard/credit-manager-dashboard/sanction-letter/sanction-letter.component';
+import { DocumentsSumbmitedApplicationsComponent } from './dashboard/credit-manager-dashboard/documents-sumbmited-applications/documents-sumbmited-applications.component';
+import { SafeUrlPipe } from './dashboard/credit-manager-dashboard/verify-documents/safe-url.pipe';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
 
 @NgModule({
   declarations: [
+    SafeUrlPipe,
     AppComponent,
     NavbarComponent,
     HomeComponent,
@@ -44,6 +53,14 @@ import { ViewDocumentsComponent } from './dashboard/customer-dashboard/view-docu
     UploadDocumentComponent,
     ViewApplicationsComponent,
     ViewDocumentsComponent,
+    PendingApplicationsComponent,
+    AuthComponent,
+    VerifyDocumentsComponent,
+    EvaluateLoanComponent,
+    SanctionLetterComponent,
+    DocumentsSumbmitedApplicationsComponent,
+    
+    
     
   ],
   imports: [
@@ -51,8 +68,10 @@ import { ViewDocumentsComponent } from './dashboard/customer-dashboard/view-docu
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
-  ],
+    HttpClientModule,
+    NgxPaginationModule,
+    
+  ],  
   providers: [],
   bootstrap: [AppComponent]
 })

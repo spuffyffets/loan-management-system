@@ -1,0 +1,93 @@
+<div class="container">
+  <h2>Loan Applications Ready for Evaluation</h2>
+  
+  <div *ngIf="isLoading" class="loading">
+    <i class="fas fa-spinner fa-spin"></i> Loading applications...
+  </div>
+  
+  <div *ngIf="errorMessage" class="error">
+    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+  </div>
+
+  <div class="application-list">
+    <div *ngFor="let app of applications" class="application-card" 
+         [class.selected]="app.id === selectedApplication?.id"
+         (click)="selectApplication(app)">
+      <h3>{{ app.applicantName }}</h3>
+      <p><strong>Loan Amount:</strong> {{ app.loanAmount | currency:'INR':'symbol':'1.0-0' }}</p>
+      <p><strong>Tenure:</strong> {{ app.loanTenureInMonths }} months</p>
+      <p>
+        <strong>Status:</strong> 
+        <span [ngClass]="{
+          'status-pending': app.applicationStatus === 'PENDING',
+          'status-approved': app.applicationStatus === 'APPROVED',
+          'status-rejected': app.applicationStatus === 'REJECTED'
+        }">
+          {{ app.applicationStatus }}
+        </span>
+      </p>
+      <p><strong>CIBIL:</strong> {{ app.cibilScore }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="selectedApplication" class="application-details">
+    <h3>Application Details</h3>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <strong>Applicant Name:</strong> {{ selectedApplication.applicantName }}
+      </div>
+      <div class="detail-item">
+        <strong>Loan Amount:</strong> {{ selectedApplication.loanAmount | currency:'INR':'symbol':'1.0-0' }}
+      </div>
+      <div class="detail-item">
+        <strong>CIBIL Score:</strong> {{ selectedApplication.cibilScore }}
+      </div>
+      <div class="detail-item">
+        <strong>Tenure:</strong> {{ selectedApplication.loanTenureInMonths }} months
+      </div>
+      <div class="detail-item">
+        <strong>Application Date:</strong> {{ selectedApplication.applicationDate | date }}
+      </div>
+      <div class="detail-item">
+        <strong>Status:</strong> 
+        <span [ngClass]="{
+          'status-pending': selectedApplication.applicationStatus === 'PENDING',
+          'status-approved': selectedApplication.applicationStatus === 'APPROVED',
+          'status-rejected': selectedApplication.applicationStatus === 'REJECTED'
+        }">
+          {{ selectedApplication.applicationStatus }}
+        </span>
+      </div>
+    </div>
+    
+    <h4><i class="fas fa-file-alt"></i> Documents</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Document Name</th>
+          <th>Type</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let doc of documents">
+          <td>{{ doc.name }}</td>
+          <td>{{ doc.documentType }}</td>
+          <td>
+            <span [ngClass]="{
+              'status-pending': doc.verificationStatus === 'PENDING',
+              'status-approved': doc.verificationStatus === 'VERIFIED',
+              'status-rejected': doc.verificationStatus === 'REJECTED'
+            }">
+              {{ doc.verificationStatus }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <button (click)="evaluateApplication()" class="evaluate-btn">
+      <i class="fas fa-check-circle"></i> Evaluate Application
+    </button>
+  </div>
+</div>

@@ -7,4 +7,15 @@ import { Component } from '@angular/core';
 })
 export class LoanOfficerDashboardComponent {
 
+  officerName: string = '';
+
+ngOnInit(): void {
+  this.officerName = localStorage.getItem('name') || 'LoanOfficer';
+}
+
+logout(): void {
+  localStorage.clear();
+  window.location.href = '/auth';
+}
+
 }
