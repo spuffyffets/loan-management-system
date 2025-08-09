@@ -10,8 +10,8 @@
   </div>
 
   <!-- Table -->
-  <table class="table table-striped table-bordered" *ngIf="disbursements.length > 0 && !loading">
-    <thead class="table-dark">
+  <table class="table table-striped table-bordered shadow" *ngIf="disbursements.length > 0 && !loading">
+    <thead class="table-primary">
       <tr>
         <th>ID</th>
         <th>Loan Application ID</th>
@@ -32,7 +32,19 @@
         <td>{{ dis.approvedAmount | currency:'INR' }}</td>
         <td>{{ dis.disbursedAmount | currency:'INR' }}</td>
         <td>{{ dis.disbursementDate | date:'mediumDate' }}</td>
-        <td>{{ dis.disbursementStatus }}</td>
+        <td>
+          <span class="badge"
+            [ngClass]="{
+              'bg-success': dis.disbursementStatus === 'DISBURSED',
+              'bg-primary': dis.disbursementStatus === 'APPROVED',
+              'bg-warning': dis.disbursementStatus === 'PENDING',
+              'bg-danger': dis.disbursementStatus === 'REJECTED',
+              'bg-info': dis.disbursementStatus === 'PROCESSING'
+            }"
+          >
+            {{ dis.disbursementStatus }}
+          </span>
+        </td>
       </tr>
     </tbody>
   </table>

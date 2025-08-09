@@ -10,6 +10,11 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./view-applications.component.css']
 })
 export class ViewApplicationsComponent implements OnInit {
+  documentsMap: { [appId: number]: boolean } = {};
+hasDocuments(appId: number): boolean {
+  return this.documentsMap[appId] === true;
+}
+
   applications: any[] = [];
 
 sanctionDetailsMap: { [loanAppId: number]: SanctionDetails } = {};
@@ -30,21 +35,28 @@ sanctionDetailsMap: { [loanAppId: number]: SanctionDetails } = {};
 
   constructor(private customerService: CustomerService) {}
 
-  ngOnInit(): void {
-    const email = localStorage.getItem('email');
-    if (email) {
-      this.customerService.getApplications(email).subscribe({
-        next: (res) => {
-          this.applications = res;
-          console.log('Applications fetched:', res);
-        },
-        error: (err) => {
-          console.error('Error fetching applications', err);
-          alert('Failed to fetch applications');
-        }
-      });
-    }
-  }
+  ngOnInit() {
+  const email = localStorage.getItem('email');
+  if (email) {
+    this.customerService.getApplications(email).subscribe({
+      next: (apps) => {
+        this.applications = apps;
+
+        // For each application, fetch documents or check if docs exist
+        apps.forEach(app => {
+          this.customerService.getUploadedDocuments(email).subscribe({
+            next: (docs) => {
+              // Check if docs exist for this app (adjust logic as per your data)
+              this.documentsMap[app.id] = docs.some(doc => doc.applicationId === app.id);
+            },
+            error: (err) => console.error('Error fetching docs', err)
+          });
+        });
+      }
+    });
+  }
+}
+
 
   deleteApplication(id: number) {
     const email = localStorage.getItem('email');

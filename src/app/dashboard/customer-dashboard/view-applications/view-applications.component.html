@@ -35,9 +35,15 @@
           </td>
 
           <td>
-            <button class="btn btn-sm btn-danger me-2" (click)="deleteApplication(app.id)">
-              Delete
-            </button>
+           <button class="btn btn-sm btn-danger me-2" 
+        (click)="deleteApplication(app.id)" 
+        [disabled]="app.applicationStatus === 'SANCTIONED' 
+                  || app.applicationStatus === 'EVALUATED' 
+                  || app.applicationStatus === 'DISBURSED' 
+                  || hasDocuments(app.id)">
+  Delete
+</button>
+
 
             <button *ngIf="app.applicationStatus === 'REQUESTED_DOCUMENTS'"
                     class="btn btn-sm btn-primary"
