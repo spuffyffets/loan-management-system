@@ -67,7 +67,7 @@ export class DisbursementService {
 
     return this.http.post(
       `${this.baseUrl}/process/${loanAppId}`,
-      { amount }, // Send as request body instead of query param
+      { amount }, 
       { responseType: 'text' }
     ).pipe(
       catchError(this.handleError)
@@ -85,7 +85,6 @@ export class DisbursementService {
     );
   }
 
-  // 5. Get disbursement object by loan application ID
  // 5. Get disbursement object by loan application ID
 getDisbursementObjectByLoanAppId(loanAppId: number): Observable<Disbursement> {
   if (!loanAppId || isNaN(loanAppId)) {
