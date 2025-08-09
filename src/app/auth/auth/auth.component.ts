@@ -18,13 +18,13 @@ export class AuthComponent {
     private router: Router,
     private authService: AuthService
   ) {
-    // Initialize login form
+    
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
 
-    // Initialize register form
+    
     this.registerForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -79,7 +79,7 @@ export class AuthComponent {
       this.authService.register(this.registerForm.value).subscribe({
         next: (response: string) => {
           alert(response);
-          this.toggleLogin(); // Switch to login form after successful registration
+          this.toggleLogin(); 
         },
         error: (err) => {
           console.error('Registration failed', err);

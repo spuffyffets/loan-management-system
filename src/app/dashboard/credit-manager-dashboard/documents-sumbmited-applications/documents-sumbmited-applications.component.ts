@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CreditManagerService } from 'src/app/shared/services/credit-manager.service';
 
 @Component({
-  selector: 'app-documents-sumbmited-applications', // Match file name
+  selector: 'app-documents-sumbmited-applications', 
   templateUrl: './documents-sumbmited-applications.component.html',
   styleUrls: ['./documents-sumbmited-applications.component.css']
 })

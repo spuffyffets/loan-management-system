@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-credit-manager-dashboard',
   templateUrl: './credit-manager-dashboard.component.html',
+  
 })
 export class CreditManagerDashboardComponent implements OnInit {
   creditManagerName: string = '';

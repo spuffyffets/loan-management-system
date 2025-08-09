@@ -5,12 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './core/navbar/navbar.component';
 import { HomeComponent } from './core/home/home.component';
-import { LoginComponent } from './auth/login/login.component';
+
 import { AboutUsComponent } from './core/about-us/about-us.component';
 import { ContactUComponent } from './core/contact-u/contact-u.component';
 import { GalleryComponent } from './core/gallery/gallery.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RegisterComponent } from './auth/register/register.component';
+
 import { CustomerDashboardComponent } from './dashboard/customer-dashboard/customer-dashboard.component';
 import { LoanOfficerDashboardComponent } from './dashboard/loan-officer-dashboard/loan-officer-dashboard.component';
 import { CreditManagerDashboardComponent } from './dashboard/credit-manager-dashboard/credit-manager-dashboard.component';
@@ -29,6 +29,10 @@ import { SanctionLetterComponent } from './dashboard/credit-manager-dashboard/sa
 import { DocumentsSumbmitedApplicationsComponent } from './dashboard/credit-manager-dashboard/documents-sumbmited-applications/documents-sumbmited-applications.component';
 import { SafeUrlPipe } from './dashboard/credit-manager-dashboard/verify-documents/safe-url.pipe';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { PendingDisbursementsComponent } from './dashboard/disbursement-dashboard/pending-disbursements/pending-disbursements.component';
+
+import { DisbursementHistoryComponent } from './dashboard/disbursement-dashboard/disbursement-history/disbursement-history.component';
+
 
 
 
@@ -39,11 +43,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    LoginComponent,
     AboutUsComponent,
     ContactUComponent,
     GalleryComponent,
-    RegisterComponent,
     CustomerDashboardComponent,
     LoanOfficerDashboardComponent,
     CreditManagerDashboardComponent,
@@ -59,7 +61,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     EvaluateLoanComponent,
     SanctionLetterComponent,
     DocumentsSumbmitedApplicationsComponent,
-    
+    PendingDisbursementsComponent,
+    DisbursementHistoryComponent,
+
     
     
   ],

@@ -4,114 +4,146 @@
   <div *ngIf="applications.length > 0; else noData">
     <table class="table table-bordered table-hover shadow">
       <thead class="table-primary">
-  <tr>
-    <th>Application ID</th>
-    <th>Loan Purpose</th>
-    <th>Amount</th>
-    <th>Tenure</th>
-    <th>Status</th>
-    <th>Action</th>
-  </tr>
-</thead>
+        <tr>
+          <th>Application ID</th>
+          <th>Loan Purpose</th>
+          <th>Amount</th>
+          <th>Tenure</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
 
       <tbody>
-  <tr *ngFor="let app of applications">
-    <td>{{ app.id }}</td>
-    <td>{{ app.loanPurpose }}</td>
-    <td>₹{{ app.loanAmount }}</td>
-    <td>{{ app.loanTenureInMonths }} months</td>
-    <td>
-     <span class="badge"
-  [ngClass]="{
-    'bg-warning': app.applicationStatus === 'PENDING' || app.applicationStatus === 'REQUESTED_DOCUMENTS',
+        <tr *ngFor="let app of applications">
+          <td>{{ app.id }}</td>
+          <td>{{ app.loanPurpose }}</td>
+          <td>₹{{ app.loanAmount }}</td>
+          <td>{{ app.loanTenureInMonths }} months</td>
+          <td>
+            <span class="badge"
+              [ngClass]="{
+                'bg-warning': app.applicationStatus === 'PENDING' || app.applicationStatus === 'REQUESTED_DOCUMENTS',
+                'bg-primary': app.applicationStatus === 'CIBIL_VERIFIED',
+                'bg-info': app.applicationStatus === 'DOCUMENT_SUBMITTED' || app.applicationStatus === 'EVALUATED',
+                'bg-success': app.applicationStatus === 'SANCTIONED' || app.applicationStatus === 'DISBURSED' || app.applicationStatus === 'ALL_DOCUMENT_VERIFIED',
+                'bg-danger': app.applicationStatus === 'REJECTED'
+              }"
+            >
+              {{ formatStatus(app.applicationStatus) }}
+            </span>
+          </td>
 
+          <td>
+            <button class="btn btn-sm btn-danger me-2" (click)="deleteApplication(app.id)">
+              Delete
+            </button>
 
+            <button *ngIf="app.applicationStatus === 'REQUESTED_DOCUMENTS'"
+                    class="btn btn-sm btn-primary"
+                    (click)="openUploadModal(app.id)">
+              Upload Documents
+            </button>
 
-    'bg-primary': app.applicationStatus === 'CIBIL_VERIFIED',
-    'bg-info': app.applicationStatus === 'DOCUMENT_SUBMITTED' || app.applicationStatus === 'EVALUATED',
-    'bg-success': app.applicationStatus === 'SANCTIONED' || app.applicationStatus === 'DISBURSED',
-    'bg-danger': app.applicationStatus === 'REJECTED'
-  }">
-  {{ app.applicationStatus.replace('_', ' ') }}
-</span>
-    </td>
+            <button *ngIf="app.applicationStatus === 'SANCTIONED' || app.applicationStatus === 'DISBURSED' || app.applicationStatus === 'ALL_DOCUMENT_VERIFIED'"
+                    class="btn btn-sm btn-info me-2"
+                    (click)="viewSanctionLetter(app.id)">
+              View Sanction Letter
+            </button>
 
-    <td>
-  <button
-    class="btn btn-sm btn-danger me-2"
-    (click)="deleteApplication(app.id)">
-    Delete
-  </button>
-
-  <button *ngIf="app.applicationStatus === 'REQUESTED_DOCUMENTS'"
-          class="btn btn-sm btn-primary"
-          (click)="openUploadModal(app.id)">
-    Upload Documents
-  </button>
-</td>
-
-
-  </tr>
-</tbody>
-
+            <button *ngIf="app.applicationStatus === 'SANCTIONED' || app.applicationStatus === 'DISBURSED' || app.applicationStatus === 'ALL_DOCUMENT_VERIFIED'"
+                    class="btn btn-sm btn-success"
+                    (click)="downloadSanctionLetter(app.id)">
+              Download Sanction Letter
+            </button>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
-
-  <!-- Upload Document Modal -->
-<div *ngIf="showUploadForm" class="card mt-3 p-3 shadow">
-  <h5 class="mb-3">Upload Documents for Application ID: {{ selectedAppId }}</h5>
-<h6 class="text-success mb-0">{{ getUploadedCount() }}</h6>
-
-  <div class="table-responsive">
-    <table class="table table-bordered align-middle text-center">
-      <thead class="table-secondary">
-        <tr>
-          <th>Document Type</th>
-          <th>Status</th>
-          <th>Select File</th>
-          <th>Upload</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let type of documentTypes">
-          <td>{{ type }}</td>
-          <td>
-            <span *ngIf="uploadedDocuments[type]">
-              {{ uploadedDocuments[type] }}
-            </span>
-            <span *ngIf="!uploadedDocuments[type]" class="text-danger">
-              Not Uploaded
-            </span>
-          </td>
-          <td>
-            <input
-              type="file"
-              class="form-control"
-              (change)="onFileSelectedPerType($event, type)"
-            />
-          </td>
-          <td>
-            <button
-              class="btn btn-sm btn-success"
-              (click)="uploadPerType(type)"
-            >
-              Upload
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <button class="btn btn-secondary mt-3" (click)="closeUploadForm()">
-    Close
-  </button>
-</div>
-
 
   <ng-template #noData>
     <div class="alert alert-info text-center">
       You have not applied for any loans yet.
     </div>
   </ng-template>
+
+  <!-- Upload Document Modal -->
+  <div *ngIf="showUploadForm" class="card mt-3 p-3 shadow">
+    <h5 class="mb-3">Upload Documents for Application ID: {{ selectedAppId }}</h5>
+    <h6 class="text-success mb-0">{{ getUploadedCount() }}</h6>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center">
+        <thead class="table-secondary">
+          <tr>
+            <th>Document Type</th>
+            <th>Status</th>
+            <th>Select File</th>
+            <th>Upload</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let type of documentTypes">
+            <td>{{ type }}</td>
+            <td>
+              <span *ngIf="uploadedDocuments[type]">
+                {{ uploadedDocuments[type] }}
+              </span>
+              <span *ngIf="!uploadedDocuments[type]" class="text-danger">
+                Not Uploaded
+              </span>
+            </td>
+            <td>
+              <input
+                type="file"
+                class="form-control"
+                (change)="onFileSelectedPerType($event, type)"
+              />
+            </td>
+            <td>
+              <button
+                class="btn btn-sm btn-success"
+                (click)="uploadPerType(type)"
+              >
+                Upload
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="btn btn-secondary mt-3" (click)="closeUploadForm()">
+      Close
+    </button>
+  </div>
+
+  <!-- Sanction Details Modal -->
+  <div *ngIf="showSanctionDetailsForAppId !== null" class="card mt-4 p-3 shadow">
+    <h5>Sanction Details for Application ID: {{ showSanctionDetailsForAppId }}</h5>
+
+    <button class="btn btn-sm btn-secondary mb-3" (click)="closeSanctionDetails()">Close</button>
+
+    <div *ngIf="sanctionLoading" class="alert alert-info">
+      Loading sanction details...
+    </div>
+
+    <div *ngIf="!sanctionLoading && sanctionDetailsMap[showSanctionDetailsForAppId]">
+      <table class="table table-bordered">
+        <tr><th>Loan Amount</th><td>₹{{ sanctionDetailsMap[showSanctionDetailsForAppId].loanAmount }}</td></tr>
+        <tr><th>Loan Tenure</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].loanTenureInMonths }} months</td></tr>
+        <tr><th>Loan Purpose</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].loanPurpose }}</td></tr>
+        <tr><th>Applicant Name</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].applicantName }}</td></tr>
+        <tr><th>Applicant Email</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].applicantEmail }}</td></tr>
+        <tr><th>Applicant Phone</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].applicantPhone }}</td></tr>
+        <tr><th>Sanctioned Amount</th><td>₹{{ sanctionDetailsMap[showSanctionDetailsForAppId].sanctionedAmount }}</td></tr>
+        <tr><th>Interest Rate</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].interestRate }}%</td></tr>
+        <tr><th>Tenure (months)</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].tenureInMonths }}</td></tr>
+        <tr><th>Issue Date</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].issueDate | date }}</td></tr>
+        <tr><th>Bank Name</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].bankName }}</td></tr>
+        <tr><th>Bank Branch</th><td>{{ sanctionDetailsMap[showSanctionDetailsForAppId].bankBranch }}</td></tr>
+      </table>
+    </div>
+  </div>
 </div>

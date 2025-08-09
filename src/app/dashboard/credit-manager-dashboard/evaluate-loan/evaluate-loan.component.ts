@@ -60,8 +60,8 @@ export class EvaluateLoanComponent implements OnInit {
     this.isLoading = true;
     this.CreditManagerService.evaluateLoan(this.selectedApplication.id).subscribe({
       next: (response) => {
-        alert(response); // "Loan application evaluated successfully!"
-        this.loadApplications(); // Refresh the list
+        alert(response); 
+        this.loadApplications(); 
         this.selectedApplication = null;
         this.isLoading = false;
       },

@@ -1,0 +1,40 @@
+<div class="container mt-3">
+  <h3 class="text-primary mb-3">Pending Disbursements</h3>
+
+  <div *ngIf="loading" class="alert alert-info">Loading...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <table class="table table-bordered table-hover" *ngIf="sanctionedLoans.length > 0">
+    <thead class="table-light">
+      <tr>
+        <th>Loan App ID</th>
+        <th>Applicant Name</th>
+        <th>Approved Amount</th>
+        <th>Interest Rate</th>
+        <th>Tenure (Months)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let loan of sanctionedLoans">
+        <td>{{ loan.loanAppId }}</td>
+        <td>{{ loan.applicantName }}</td>
+        <td>{{ loan.approvedAmount | currency }}</td>
+        <td>{{ loan.interestRate }}%</td>
+        <td>{{ loan.tenureMonths }}</td>
+        <td>
+          <button class="btn btn-success btn-sm"
+                  (click)="disburseLoan(loan.loanAppId, loan.approvedAmount)">
+            Disburse
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && sanctionedLoans.length === 0 && !errorMessage" 
+       class="alert alert-warning">
+    No pending disbursements found.
+  </div>
+</div>

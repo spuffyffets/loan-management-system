@@ -1,42 +1,146 @@
-<div class="sanction-letter-form">
-  <h2>Generate Sanction Letter</h2>
-
-  <form (ngSubmit)="generate()">
-    <div class="form-group">
-      <label for="amount">Sanctioned Amount (₹):</label>
-      <input type="number" id="amount" [(ngModel)]="sanctionLetter.sanctionedAmount" 
-             name="amount" required min="0" placeholder="Enter sanctioned amount">
+<div class="container mt-4">
+  <!-- Application List View -->
+  <div *ngIf="showList" class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="fas fa-list me-2"></i>
+        Evaluated Applications
+      </h4>
     </div>
+    
+    <div class="card-body">
+      <!-- Loading Indicator -->
+      <div *ngIf="isApplicationLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading applications...</p>
+      </div>
 
-    <div class="form-group">
-      <label for="interestRate">Interest Rate (%):</label>
-      <input type="number" id="interestRate" [(ngModel)]="sanctionLetter.interestRate" 
-             name="interestRate" step="0.01" required min="0" max="30" 
-             placeholder="Enter interest rate">
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ error }}
+      </div>
+
+      <!-- Applications Table -->
+      <div *ngIf="!isApplicationLoading && applications.length > 0">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Applicant</th>
+              <th>Loan Amount</th>
+              <th>Approved Amount</th>
+              <th>CIBIL</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of applications">
+              <td>{{ app.id }}</td>
+              <td>{{ app.applicantName }}</td>
+              <td>{{ app.loanAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td>{{ app.approvedAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td>{{ app.cibilScore }}</td>
+              <td>
+                <button (click)="selectApplication(app)" class="btn btn-sm btn-primary">
+                  Generate Sanction
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isApplicationLoading && applications.length === 0" class="text-center py-4">
+        <p>No evaluated applications available</p>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label for="tenure">Tenure (in months):</label>
-      <input type="number" id="tenure" [(ngModel)]="sanctionLetter.tenureInMonths" 
-             name="tenure" required min="1" max="360" placeholder="Enter tenure in months">
-    </div>
-
-    <div class="form-group">
-      <label for="emiFile">EMI Schedule File URL:</label>
-      <input type="text" id="emiFile" [(ngModel)]="sanctionLetter.emiScheduleFileUrl" 
-             name="emiFile" required placeholder="Enter file URL">
-    </div>
-
-    <button type="submit" class="generate-btn">
-      <i class="fas fa-file-contract"></i> Generate Sanction Letter
-    </button>
-  </form>
-
-  <div *ngIf="message" class="message success">
-    <i class="fas fa-check-circle"></i> {{ message }}
   </div>
-  
-  <div *ngIf="error" class="message error">
-    <i class="fas fa-exclamation-circle"></i> {{ error }}
+
+  <!-- Sanction Letter Form View -->
+  <div *ngIf="!showList && selectedApplication" class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="fas fa-file-contract me-2"></i>
+        Generate Sanction Letter for {{ selectedApplication.applicantName }}
+      </h4>
+    </div>
+
+    <div class="card-body">
+      <!-- Success Message -->
+      <div *ngIf="message" class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ message }}
+      </div>
+
+      <!-- Application Summary -->
+      <div class="mb-4">
+        <h5>Application Summary</h5>
+        <div class="row">
+          <div class="col-md-4">
+            <p><strong>Loan Amount:</strong> {{ selectedApplication.loanAmount | currency:'INR':'symbol':'1.0-0' }}</p>
+          </div>
+          <div class="col-md-4">
+            <p><strong>Approved Amount:</strong> {{ selectedApplication.approvedAmount | currency:'INR':'symbol':'1.0-0' }}</p>
+          </div>
+          <div class="col-md-4">
+            <p><strong>Evaluation Remarks:</strong> {{ selectedApplication.evaluationRemarks }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sanction Form -->
+      <form [formGroup]="sanctionForm" (ngSubmit)="generate()">
+        <div class="row mb-3">
+           <div class="col-md-6">
+            <label class="form-label">Sanctioned Amount (₹)</label>
+            <input type="number" class="form-control" formControlName="sanctionedAmount"
+                   [ngClass]="{ 'is-invalid': isFieldInvalid('sanctionedAmount') }">
+            <div *ngIf="isFieldInvalid('sanctionedAmount')" class="invalid-feedback">
+              Please enter a valid amount (minimum ₹1)
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Interest Rate (%)</label>
+            <input type="number" step="0.01" class="form-control" formControlName="interestRate"
+                   [ngClass]="{ 'is-invalid': isFieldInvalid('interestRate') }">
+            <div *ngIf="isFieldInvalid('interestRate')" class="invalid-feedback">
+              Please enter a valid rate (0.1% to 30%)
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Tenure (Months)</label>
+            <input type="number" class="form-control" formControlName="tenureInMonths"
+                   [ngClass]="{ 'is-invalid': isFieldInvalid('tenureInMonths') }">
+            <div *ngIf="isFieldInvalid('tenureInMonths')" class="invalid-feedback">
+              Please enter a valid tenure (1 to 360 months)
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">EMI Schedule File URL</label>
+            <input type="text" class="form-control" formControlName="emiScheduleFileUrl"
+                   [ngClass]="{ 'is-invalid': isFieldInvalid('emiScheduleFileUrl') }">
+            <div *ngIf="isFieldInvalid('emiScheduleFileUrl')" class="invalid-feedback">
+              Please provide a valid file URL
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-secondary" (click)="backToList()">
+            <i class="fas fa-arrow-left me-1"></i> Back to List
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading || sanctionForm.invalid">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+            Generate Sanction Letter
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

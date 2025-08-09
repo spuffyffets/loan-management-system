@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerService } from 'src/app/shared/services/customer.service';
+import { CustomerService, SanctionDetails } from 'src/app/shared/services/customer.service';
+import { saveAs } from 'file-saver';
+
+
 
 @Component({
   selector: 'app-view-applications',
@@ -9,6 +12,9 @@ import { CustomerService } from 'src/app/shared/services/customer.service';
 export class ViewApplicationsComponent implements OnInit {
   applications: any[] = [];
 
+sanctionDetailsMap: { [loanAppId: number]: SanctionDetails } = {};
+  showSanctionDetailsForAppId: number | null = null;
+  sanctionLoading: boolean = false;
  
   uploadedDocuments: { [type: string]: string } = {};
   selectedFiles: { [type: string]: File } = {};
@@ -91,9 +97,13 @@ getUploadedCount(): string {
     this.uploadedDocuments = {};
   }
 
-  onFileSelectedPerType(event: any, type: string): void {
-    this.selectedFiles[type] = event.target.files[0];
-  }
+ onFileSelectedPerType(event: Event, type: string): void {
+  const target = event.target as HTMLInputElement;
+  if (target && target.files) {
+    this.selectedFiles[type] = target.files[0];
+  }
+}
+
 
   uploadPerType(type: string): void {
     const email = localStorage.getItem('email');
@@ -116,4 +126,55 @@ getUploadedCount(): string {
       }
     });
   }
+
+
+formatStatus(status: string): string {
+  return status.replace(/_/g, ' ');
+}
+
+viewSanctionLetter(appId: number): void {
+  const email = localStorage.getItem('email');
+  if (!email) {
+    alert('User email not found.');
+    return;
+  }
+
+  this.sanctionLoading = true;
+  this.customerService.getSanctionDetails(appId, email).subscribe({
+    next: (details) => {
+      this.sanctionDetailsMap[appId] = details;
+      this.showSanctionDetailsForAppId = appId;
+      this.sanctionLoading = false;
+    },
+    error: (err) => {
+      alert('Failed to load sanction details');
+      this.sanctionLoading = false;
+    }
+  });
+}
+
+downloadSanctionLetter(appId: number): void {
+  const email = localStorage.getItem('email');
+  if (!email) {
+    alert('User email not found.');
+    return;
+  }
+
+  this.customerService.downloadSanctionLetter(appId, email).subscribe({
+    next: (blob) => {
+      const fileName = `Sanction_Letter_${appId}.pdf`;
+      saveAs(blob, fileName);
+    },
+    error: (err) => {
+      alert('Failed to download sanction letter');
+    }
+  });
+}
+
+closeSanctionDetails(): void {
+  this.showSanctionDetailsForAppId = null;
+}
+
+
+
 }

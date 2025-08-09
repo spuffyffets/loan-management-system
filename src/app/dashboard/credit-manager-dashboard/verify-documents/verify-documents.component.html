@@ -86,7 +86,8 @@
               <tr *ngFor="let doc of documents">
                 <td>{{ doc.id }}</td>
                 <td>{{ doc.name || 'Untitled' }}</td>
-                <td>{{ doc.type || 'N/A' }}</td>
+                <td>{{ doc.fileType || 'N/A' }}</td>
+
                 <td>
                   <span class="badge" [ngClass]="{
                     'bg-success': doc.verificationStatus === 'VERIFIED',
@@ -98,7 +99,8 @@
                 </td>
                 <td>
                   <button class="btn btn-sm btn-outline-primary w-100" 
-                          (click)="openDocumentModal(doc)"
+                          (click)="viewDocument(doc.name)"
+
                           [disabled]="!doc.data"
                           title="View Document">
                     <i class="bi bi-eye"></i> View
@@ -130,7 +132,7 @@
 </div>
 
 <!-- Document Preview Modal -->
-<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
+<!-- <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
@@ -184,5 +186,5 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <div *ngIf="showModal" class="modal-backdrop fade show"></div>

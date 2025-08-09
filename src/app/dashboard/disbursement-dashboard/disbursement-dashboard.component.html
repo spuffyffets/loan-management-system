@@ -1,1 +1,46 @@
-<p>disbursement-dashboard works!</p>
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="bg-light shadow p-3" style="width: 250px; height: 100vh;">
+    <div class="text-center mb-4">
+      <i class="fas fa-user-circle fa-3x text-primary"></i>
+      <h5 class="mt-2">{{ disbursementManagerName }}</h5>
+      <small class="text-muted">Disbursement Manager</small>
+    </div>
+
+    <ul class="nav flex-column nav-pills">
+      <li class="nav-item mb-2">
+        <a routerLink="pending-disbursements" routerLinkActive="active" class="nav-link text-dark">
+          <i class="fas fa-clock me-2"></i> Pending Disbursements
+        </a>
+      </li>
+      <!-- <li class="nav-item mb-2">
+        <a routerLink="processed-disbursements" routerLinkActive="active" class="nav-link text-dark">
+          <i class="fas fa-check-circle me-2"></i> Processed Disbursements
+        </a>
+      </li> -->
+      <li class="nav-item mb-2">
+        <a routerLink="disbursement-history" routerLinkActive="active" class="nav-link text-dark">
+          <i class="fas fa-chart-bar me-2"></i> Disbursement History
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="flex-grow-1">
+    <!-- Topbar -->
+    <div class="bg-white shadow-sm p-3 mb-3 d-flex justify-content-between align-items-center">
+      <h4 class="text-primary mb-0">
+        <i class="fas fa-tachometer-alt me-2"></i> Disbursement Manager Dashboard
+      </h4>
+      <button class="btn btn-outline-danger btn-sm me-3" (click)="logout()">
+        <i class="fas fa-sign-out-alt me-1"></i> Logout
+      </button>
+    </div>
+
+    <!-- Routed Page Content -->
+    <div class="p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

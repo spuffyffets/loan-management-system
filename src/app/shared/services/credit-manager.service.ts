@@ -1,14 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 export interface Document {
   id: number;
   name: string;
   documentType: string;
   verificationStatus: string;
+  fileType?: string;  
+  fileData?: string; 
   fileUrl?: string;
+}
+
+export interface LoanApplicationforsanctionDTO {
+  id: number;
+  applicantName: string;
+  loanAmount: number;
+  loanTenureInMonths: number;
+  cibilScore: number;
+  applicationDate: string;
+  loanPurpose: string;
+  applicationStatus: string;
+  approvedAmount: number;
+  interestRate: number;
+  evaluationRemarks: string;
 }
 
 export interface LoanApplicationDTO {
@@ -25,6 +41,19 @@ export interface LoanApplicationDTO {
 export interface LoanWithDocumentsDTO {
   loan: LoanApplicationDTO;
   documents: Document[];
+}
+export interface LoanApplicationforsanctionDTO {
+  id: number;
+  loanAmount: number;
+  loanTenureInMonths: number;
+  cibilScore: number;
+  applicationDate: string;
+  loanPurpose: string;
+  applicationStatus: string;
+  applicantName: string;
+  approvedAmount: number;
+  interestRate: number;
+  evaluationRemarks: string;
 }
 
 export interface SanctionLetter {
@@ -44,11 +73,35 @@ export class CreditManagerService {
 
   constructor(private http: HttpClient) {}
 
+
+  private loadingState = new BehaviorSubject<boolean>(false);
+public loading$ = this.loadingState.asObservable();
+
+private setLoading(loading: boolean): void {
+  this.loadingState.next(loading);
+}
+
+
+
+
+
   // Get all applications with documents submitted status
-  getApplicationsWithDocumentsSubmitted(): Observable<LoanApplicationDTO[]> {
-    return this.http.get<LoanApplicationDTO[]>(`${this.baseUrl}/loan-applications/submitted`)
-      .pipe(catchError(this.handleError));
+ private cache = new Map<string, any>();
+
+
+getApplicationsWithDocumentsSubmitted(forceRefresh = false): Observable<LoanApplicationDTO[]> {
+  const key = 'submitted-apps';
+  if (!forceRefresh && this.cache.has(key)) {
+    return of(this.cache.get(key));
   }
+  
+  return this.http.get<LoanApplicationDTO[]>(
+    `${this.baseUrl}/loan-applications/submitted`
+  ).pipe(
+    tap(data => this.cache.set(key, data)),
+    catchError(this.handleError)
+  );
+}
 
   // Get applications ready for evaluation (ALL_DOCUMENT_VERIFIED status)
   getApplicationsReadyForEvaluation(): Observable<LoanApplicationDTO[]> {
@@ -80,19 +133,31 @@ export class CreditManagerService {
     ).pipe(catchError(this.handleError));
   }
 
+ getEvaluatedApplications(): Observable<LoanApplicationforsanctionDTO[]> {
+  this.setLoading(true);
+  return this.http.get<LoanApplicationforsanctionDTO[]>(
+    `${this.baseUrl}/evaluated-applications`
+  ).pipe(
+    catchError(this.handleError),
+    finalize(() => this.setLoading(false))
+  );
+}
+
   // Generate sanction letter
   generateSanctionLetter(loanAppId: number, sanctionData: SanctionLetter): Observable<SanctionLetter> {
-    return this.http.post<SanctionLetter>(
-      `${this.baseUrl}/sanction/${loanAppId}`,
-      sanctionData
-    ).pipe(catchError(this.handleError));
-  }
+  return this.http.post<SanctionLetter>(
+    `${this.baseUrl}/sanction/${loanAppId}`, 
+    sanctionData
+  ).pipe(catchError(this.handleError));
+}
+
 
   // Get sanction letter
-  getSanctionLetter(loanAppId: number): Observable<SanctionLetter> {
-    return this.http.get<SanctionLetter>(`${this.baseUrl}/sanction/${loanAppId}`)
-      .pipe(catchError(this.handleError));
-  }
+ getSanctionLetter(loanAppId: number): Observable<SanctionLetter> {
+  return this.http.get<SanctionLetter>(
+    `${this.baseUrl}/sanction/${loanAppId}`  
+  ).pipe(catchError(this.handleError));
+}
 
   // Update loan application status
   updateLoanStatus(id: number, status: string): Observable<string> {
@@ -105,20 +170,31 @@ export class CreditManagerService {
 
   // Error handling
   private handleError(error: any): Observable<never> {
-    let errorMessage = 'An unknown error occurred';
+  let errorMessage = 'An unknown error occurred';
+  const defaultMsg = 'Please try again later or contact support';
+  
+  if (error.error instanceof ErrorEvent) {
+    errorMessage = `Client error: ${error.error.message}`;
+  } else {
+    errorMessage = `Server Error: ${error.status}\nMessage: ${error.message}`;
     
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
-    } else if (error.status) {
-      // Server-side error
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-      if (error.error && error.error.message) {
-        errorMessage = error.error.message;
-      }
+    // Handle specific status codes
+    if (error.status === 404) {
+      errorMessage = 'Requested resource not found';
+    } else if (error.status === 403) {
+      errorMessage = 'You are not authorized for this action';
     }
     
-    console.error('API Error:', error);
-    return throwError(() => new Error(errorMessage));
+    // Use server-provided message if available
+    if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error.statusText) {
+      errorMessage += ` (${error.statusText})`;
+    }
   }
+  
+  console.error('API Error:', error);
+  return throwError(() => new Error(`${errorMessage} - ${defaultMsg}`));
+}
+
 }
