@@ -29,22 +29,39 @@
 
 ## 📂 Project Structure (Frontend)
 
+## 📂 Project Structure
+
 ```bash
 loan-management-system/
- ├── src/
- │   ├── app/
- │   │   ├── auth/               # Login, Registration, Guards  
- │   │   ├── customer/           # Customer related components/services  
- │   │   ├── disbursement/       # Disbursement related components/services  
- │   │   ├── shared/             # Shared components (header, footer, etc.)  
- │   │   └── app.module.ts
+ ├── README.md
  ├── angular.json
  ├── package.json
- └── README.md
+ ├── tsconfig.app.json
+ ├── tsconfig.json
+ ├── tsconfig.spec.json
+ ├── .editorconfig
+ ├── .hintrc
+ └── src/
+     ├── index.html
+     ├── main.ts
+     ├── styles.css
+     ├── app/
+     │   ├── auth/                 # Login, Registration, Guards
+     │   │   └── auth/             # Auth component files
+     │   ├── core/                 # Static pages like About Us, Contact Us, Gallery, Home, Navbar
+     │   ├── customer/             # Customer-related components and services (apply loan, profile, documents, etc.)
+     │   ├── dashboard/            # Dashboards for credit manager, customer, disbursement, loan officer
+     │   ├── disbursement/         # Disbursement related components and history
+     │   ├── loan-officer-dashboard/ # Loan officer dashboard components
+     │   ├── shared/               # Shared services, pipes, and utilities
+     │   └── app.module.ts
+     ├── assets/
+     │   └── .gitkeep
+     └── typings/
+         └── file-saver.d.ts
+
 
 ```
-
---- 
 
 ## 🔧 Setup Instructions
 
