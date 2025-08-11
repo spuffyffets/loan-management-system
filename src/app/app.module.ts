@@ -32,6 +32,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { PendingDisbursementsComponent } from './dashboard/disbursement-dashboard/pending-disbursements/pending-disbursements.component';
 
 import { DisbursementHistoryComponent } from './dashboard/disbursement-dashboard/disbursement-history/disbursement-history.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 
@@ -74,6 +76,9 @@ import { DisbursementHistoryComponent } from './dashboard/disbursement-dashboard
     FormsModule,
     HttpClientModule,
     NgxPaginationModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
+    
     
   ],  
   providers: [],

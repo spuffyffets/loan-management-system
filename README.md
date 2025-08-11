@@ -72,7 +72,7 @@ loan-management-system/
 ```bash
 npm install -g @angular/cli
 
-```
+``` 
 ## Installation (Frontend)
 ```bash
 git clone https://github.com/spuffyffets/frontend.git
